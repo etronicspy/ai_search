@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { documentsTable } from "./schema/documents-schema";
 
-config({ path: ".env.local" });
+config({ path: "/Users/etronicspy/takeoff-rag-course/sections/1-learn-the-basics/.env.local" });
 
 const databaseUrl = process.env.DATABASE_URL;
 

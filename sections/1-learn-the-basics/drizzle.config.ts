@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
-config({ path: "./sections/1-learn-the-basics/.env.local" });
+config({ path: "/Users/etronicspy/takeoff-rag-course/sections/1-learn-the-basics/.env.local" });
 
 console.log(process.env.DATABASE_URL);
 
