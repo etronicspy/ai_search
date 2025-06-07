@@ -1,9 +1,8 @@
 import { config } from "dotenv";
 import OpenAI from "openai";
-import { db } from "./db";
-import { documentsTable } from "./db/schema/documents-schema";
+import { COLLECTION_NAME, qdrantClient } from "./db/qdrant-client";
 
-config({ path: ".env.local" });
+config({ path: "/Users/etronicspy/takeoff-rag-course/sections/1-learn-the-basics/.env.local" });
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
@@ -25,22 +24,33 @@ const MOCK_DOCS = [
 export async function uploadDocuments(docs: { content: string; name: string }[]) {
   const response = await openai.embeddings.create({
     model: "text-embedding-3-small",
-    dimensions: 256,
+    dimensions: 1536,
     input: docs.map((doc) => doc.content)
   });
 
-  console.log(response.data);
-  console.log(response.data.length);
+  console.log("Generated embeddings:", response.data.length);
 
-  await db.insert(documentsTable).values(
-    response.data.map((item, index) => ({
-      embedding: item.embedding,
-      content: docs[index].content,
-      name: docs[index].name
+  // Upload points to Qdrant
+  await qdrantClient.upsert(COLLECTION_NAME, {
+    wait: true,
+    points: response.data.map((item, index) => ({
+      id: index + 1, // Use number as ID
+      vector: item.embedding,
+      payload: {
+        content: docs[index].content,
+        name: docs[index].name
+      }
     }))
-  );
+  });
 
+  console.log("Uploaded points to Qdrant");
   return response.data.map((item) => item.embedding);
 }
 
-uploadDocuments(MOCK_DOCS);
+// Upload documents
+uploadDocuments(MOCK_DOCS)
+  .then(() => console.log("Documents uploaded successfully"))
+  .catch((error) => {
+    console.error("Failed to upload documents:", error);
+    process.exit(1);
+  });
