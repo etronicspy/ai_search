@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "db:generate:basics": "npx drizzle-kit generate --config=./sections/1-learn-the-basics/drizzle.config.ts",
-    "db:migrate:basics": "npx drizzle-kit migrate --config=./sections/1-learn-the-basics/drizzle.config.ts"
+    "db:migrate:basics": "npx drizzle-kit migrate --config=./sections/1-learn-the-basics/drizzle.config.ts",
+    "search": "tsx sections/1-learn-the-basics/search-cli.ts"
   },
   "author": "Mckay Wrigley",
   "license": "MIT",

@@ -2,8 +2,6 @@ import { generateEmbeddings } from "./2-generate-embeddings";
 import { COLLECTION_NAME, qdrantClient } from "./db/qdrant-client";
 
 export async function retrieveDocuments(query: string, limit = 3) {
-  console.log(`\nSearching for: "${query}"\n`);
-  
   const embeddings = await generateEmbeddings([query]);
 
   const results = await qdrantClient.search(COLLECTION_NAME, {
@@ -20,17 +18,3 @@ export async function retrieveDocuments(query: string, limit = 3) {
       score: hit.score
     }));
 }
-
-// Test search
-retrieveDocuments("Tell me about animals that sleep a lot")
-  .then((results) => {
-    console.log("Search results:");
-    results.forEach((result, index) => {
-      console.log(`\n${index + 1}. ${result.name} (score: ${(result.score * 100).toFixed(1)}%)`);
-      console.log(`   ${result.content}`);
-    });
-  })
-  .catch((error) => {
-    console.error("Failed to retrieve documents:", error);
-    process.exit(1);
-  });
