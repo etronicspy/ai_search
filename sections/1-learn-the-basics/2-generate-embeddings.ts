@@ -14,10 +14,15 @@ export async function generateEmbeddings(texts: string[]) {
     input: texts
   });
 
-  console.log(response.data);
-  console.log(response.data.length);
-
   return response.data.map((item) => item.embedding);
 }
 
-generateEmbeddings(["Hello, world!", "Goodbye, world!", "My name is Mckay"]);
+// Test the function if run directly
+if (import.meta.url === import.meta.resolve("./2-generate-embeddings.ts")) {
+  generateEmbeddings(["Hello, world!", "Goodbye, world!", "My name is Mckay"])
+    .then((embeddings) => {
+      console.log(`Generated ${embeddings.length} embeddings`);
+      console.log(`Each embedding has ${embeddings[0].length} dimensions`);
+    })
+    .catch(console.error);
+}
